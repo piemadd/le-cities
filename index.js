@@ -10,11 +10,17 @@ function titleCase(str) {
   return str.join(' ');
 }
 
-const input = fs.readFileSync('input.csv', { encoding: 'utf-8', flag: 'r' });
-const lines = input.split('\r\n');
+const input = fs.readFileSync('input.json', { encoding: 'utf-8', flag: 'r' });
+const unprocessedCities = JSON.parse(input);
 
-const processed = lines.map((line) => {
-  return titleCase(line.replaceAll('"', ''));
+let processed = {};
+
+unprocessedCities.forEach((city) => {
+
+  const cityName = titleCase(city.cityName.replaceAll('"', ''));
+  const cityPopulation = isNaN(city.cityPopulation) ? Number(city.cityPopulation.replaceAll(',', '')) : city.cityPopulation;
+
+  processed[cityName] = cityPopulation;
 });
 
 fs.writeFileSync('output.json', JSON.stringify(processed, null, 2));
